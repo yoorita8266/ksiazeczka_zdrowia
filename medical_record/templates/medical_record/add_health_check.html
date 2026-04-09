@@ -1,0 +1,50 @@
+{% extends 'medical_record/base.html' %}
+
+{% block title %}Dodaj bilans - {{ child.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-warning d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-heartbeat"></i> Dodaj bilans - {{ child.name }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Data bilansu</label>
+                        <input type="date" name="date" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Waga (kg)</label>
+                        <input type="number" name="weight" step="0.01" class="form-control" placeholder="np. 12.50" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Wzrost (cm)</label>
+                        <input type="number" name="height" step="0.01" class="form-control" placeholder="np. 85.00" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Uwagi lekarskie</label>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="Wpisz uwagi lekarskie..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'child_detail' child.pk %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Wróć
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-save"></i> Zapisz
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
