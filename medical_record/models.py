@@ -26,3 +26,26 @@ class HealthCheck(models.Model):
 
     def __str__(self):
         return f"Bilans {self.child.name} z dnia {self.date}"
+
+class HealthCheckSchedule(models.Model):
+    child = models.ForeignKey(Child, on_delete=models.CASCADE, related_name='schedule')
+    age_months = models.IntegerField(verbose_name="Wiek w miesiącach")
+    due_date = models.DateField(verbose_name="Planowana data")
+    is_done = models.BooleanField(default=False, verbose_name="Czy wykonano?")
+    health_check = models.ForeignKey(HealthCheck, null=True, blank=True, on_delete=models.SET_NULL, related_name='schedule')
+
+    def __str__(self):
+        return f"Bilans {self.age_months} mies. - {self.child.name}"
+
+from dateutil.relativedelta import relativedelta
+
+HEALTH_CHECK_AGES = [1, 2, 4, 6, 9, 12, 18, 24, 36, 48, 60, 72, 120, 156, 192, 216]
+
+def create_health_check_schedule(child):
+    for age in HEALTH_CHECK_AGES:
+        due_date = child.birth_date + relativedelta(months=age)
+        HealthCheckSchedule.objects.create(
+            child=child,
+            age_months=age,
+            due_date=due_date
+        )
