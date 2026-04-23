@@ -34,6 +34,24 @@ def add_child(request):
         form = ChildForm()
     return render(request, 'medical_record/add_child.html', {'form': form})
 
+# edycja dziecka
+def edit_child(request, pk):
+    child = Child.objects.get(id=pk)
+    if request.method == "POST":
+        form = ChildForm(request.POST, instance=child)
+        if form.is_valid():
+            form.save()
+            # przelicz daty w harmonogramie
+            from dateutil.relativedelta import relativedelta
+            schedule_items = child.schedule.all()
+            for item in schedule_items:
+                item.due_date = child.birth_date + relativedelta(months=item.age_months)
+                item.save()
+            return redirect('child_detail', pk=pk)
+    else:
+        form = ChildForm(instance=child)
+    return render(request, 'medical_record/edit_child.html', {'form': form, 'child': child})
+
 # dodawanie bilansu zdrowia
 def add_health_check(request, pk):
     child = Child.objects.get(id=pk)
@@ -46,7 +64,6 @@ def add_health_check(request, pk):
             health_check.child = child
             health_check.save()
             
-            # powiąż z harmonogramem jeśli podano
             if schedule_pk:
                 try:
                     schedule_item = HealthCheckSchedule.objects.get(pk=schedule_pk)
@@ -60,3 +77,22 @@ def add_health_check(request, pk):
     else:
         form = HealthCheckForm()
     return render(request, 'medical_record/add_health_check.html', {'form': form, 'child': child})
+
+# edycja bilansu zdrowia
+def edit_health_check(request, pk):
+    health_check = HealthCheck.objects.get(id=pk)
+    child = health_check.child
+    if request.method == "POST":
+        form = HealthCheckForm(request.POST, instance=health_check)
+        if form.is_valid():
+            form.save()
+            return redirect('child_detail', pk=child.pk)
+    else:
+        form = HealthCheckForm(instance=health_check)
+    return render(request, 'medical_record/edit_health_check.html', {'form': form, 'child': child, 'health_check': health_check})
+
+    # podgląd bilansu
+def health_check_detail(request, pk):
+    health_check = HealthCheck.objects.get(id=pk)
+    child = health_check.child
+    return render(request, 'medical_record/health_check_detail.html', {'health_check': health_check, 'child': child})

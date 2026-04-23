@@ -1,0 +1,91 @@
+{% extends 'medical_record/base.html' %}
+
+{% block title %}Bilans - {{ child.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1><i class="fas fa-heartbeat"></i> Bilans - {{ child.name }}</h1>
+    <a href="{% url 'child_detail' child.pk %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Wróć
+    </a>
+</div>
+
+<!-- Pomiary -->
+<div class="card mb-4">
+    <div class="card-header bg-warning">
+        <h5 class="mb-0"><i class="fas fa-weight"></i> Pomiary</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4"><p><strong>Data:</strong> {{ health_check.date }}</p></div>
+            <div class="col-md-4"><p><strong>Masa ciała:</strong> {{ health_check.weight }} kg</p></div>
+            <div class="col-md-4"><p><strong>Wzrost:</strong> {{ health_check.height }} cm</p></div>
+            <div class="col-md-4"><p><strong>Obwód głowy:</strong> {{ health_check.head_circumference|default:"—" }} cm</p></div>
+            <div class="col-md-4"><p><strong>Ciśnienie:</strong> {{ health_check.blood_pressure|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>BMI:</strong> {{ health_check.bmi|default:"—" }}</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- Badanie lekarskie -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-stethoscope"></i> Badanie lekarskie</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4"><p><strong>Skóra:</strong> {{ health_check.skin|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Głowa:</strong> {{ health_check.head|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Szyja:</strong> {{ health_check.neck|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Oczy:</strong> {{ health_check.eyes|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Uszy:</strong> {{ health_check.ears|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Jama ustna/gardło:</strong> {{ health_check.mouth|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Węzły chłonne:</strong> {{ health_check.lymph_nodes|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Płuca:</strong> {{ health_check.lungs|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Serce:</strong> {{ health_check.heart|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Brzuch:</strong> {{ health_check.abdomen|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Układ moczowo-płciowy:</strong> {{ health_check.urogenital|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Układ kostno-stawowy:</strong> {{ health_check.musculoskeletal|default:"—" }}</p></div>
+            <div class="col-md-4"><p><strong>Stan odżywienia:</strong> {{ health_check.nutrition_status|default:"—" }}</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- Zaburzenia -->
+<div class="card mb-4">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="fas fa-eye"></i> Zaburzenia</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6"><p><strong>Wzrok:</strong> {{ health_check.vision|default:"—" }}</p></div>
+            <div class="col-md-6"><p><strong>Słuch:</strong> {{ health_check.hearing|default:"—" }}</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- Zalecenia -->
+<div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="fas fa-clipboard"></i> Zalecenia</h5>
+    </div>
+    <div class="card-body">
+        <p><strong>Zalecenia:</strong> {{ health_check.recommendations|default:"—" }}</p>
+        <p><strong>Dieta/Witaminy:</strong> {{ health_check.diet|default:"—" }}</p>
+        <p><strong>Zlecone badania:</strong> {{ health_check.diagnostic_tests|default:"—" }}</p>
+        <p><strong>Zlecone konsultacje:</strong> {{ health_check.consultations|default:"—" }}</p>
+        <p><strong>Problemy zdrowotne:</strong> {{ health_check.health_problems|default:"—" }}</p>
+        <p><strong>Uwagi lekarskie:</strong> {{ health_check.notes|default:"—" }}</p>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between">
+    <a href="{% url 'child_detail' child.pk %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Wróć
+    </a>
+    <a href="{% url 'edit_health_check' health_check.pk %}" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Edytuj
+    </a>
+</div>
+
+{% endblock %}

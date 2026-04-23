@@ -1,13 +1,13 @@
 {% extends 'medical_record/base.html' %}
 
-{% block title %}Dodaj bilans - {{ child.name }}{% endblock %}
+{% block title %}Edytuj bilans - {{ child.name }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
             <div class="card-header bg-warning d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><i class="fas fa-heartbeat"></i> Dodaj bilans - {{ child.name }}</h4>
+                <h4 class="mb-0"><i class="fas fa-edit"></i> Edytuj bilans - {{ child.name }}</h4>
             </div>
             <div class="card-body">
                 <form method="POST">
@@ -16,30 +16,30 @@
                     <h5 class="mb-3 mt-2"><i class="fas fa-calendar"></i> Data</h5>
                     <div class="mb-3">
                         <label class="form-label">Data bilansu</label>
-                        <input type="date" name="date" class="form-control" required>
+                        <input type="date" name="date" class="form-control" value="{{ health_check.date }}" required>
                     </div>
 
                     <h5 class="mb-3 mt-4"><i class="fas fa-weight"></i> Pomiary</h5>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Masa ciała (kg)</label>
-                            <input type="number" name="weight" step="0.01" class="form-control" placeholder="np. 12.50" required>
+                            <input type="number" name="weight" step="0.01" class="form-control" value="{{ health_check.weight }}" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Wzrost (cm)</label>
-                            <input type="number" name="height" step="0.01" class="form-control" placeholder="np. 85.00" required>
+                            <input type="number" name="height" step="0.01" class="form-control" value="{{ health_check.height }}" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Obwód głowy (cm)</label>
-                            <input type="number" name="head_circumference" step="0.01" class="form-control" placeholder="np. 45.00">
+                            <input type="number" name="head_circumference" step="0.01" class="form-control" value="{{ health_check.head_circumference }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Ciśnienie tętnicze</label>
-                            <input type="text" name="blood_pressure" class="form-control" placeholder="np. 120/80">
+                            <input type="text" name="blood_pressure" class="form-control" value="{{ health_check.blood_pressure }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Wskaźnik BMI</label>
-                            <input type="number" name="bmi" step="0.01" class="form-control" placeholder="np. 18.5">
+                            <input type="number" name="bmi" step="0.01" class="form-control" value="{{ health_check.bmi }}">
                         </div>
                     </div>
 
@@ -47,55 +47,55 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Skóra</label>
-                            <input type="text" name="skin" class="form-control">
+                            <input type="text" name="skin" class="form-control" value="{{ health_check.skin }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Głowa</label>
-                            <input type="text" name="head" class="form-control">
+                            <input type="text" name="head" class="form-control" value="{{ health_check.head }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Szyja</label>
-                            <input type="text" name="neck" class="form-control">
+                            <input type="text" name="neck" class="form-control" value="{{ health_check.neck }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Oczy</label>
-                            <input type="text" name="eyes" class="form-control">
+                            <input type="text" name="eyes" class="form-control" value="{{ health_check.eyes }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Uszy</label>
-                            <input type="text" name="ears" class="form-control">
+                            <input type="text" name="ears" class="form-control" value="{{ health_check.ears }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Jama ustna/gardło</label>
-                            <input type="text" name="mouth" class="form-control">
+                            <input type="text" name="mouth" class="form-control" value="{{ health_check.mouth }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Węzły chłonne</label>
-                            <input type="text" name="lymph_nodes" class="form-control">
+                            <input type="text" name="lymph_nodes" class="form-control" value="{{ health_check.lymph_nodes }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Płuca</label>
-                            <input type="text" name="lungs" class="form-control">
+                            <input type="text" name="lungs" class="form-control" value="{{ health_check.lungs }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Serce</label>
-                            <input type="text" name="heart" class="form-control">
+                            <input type="text" name="heart" class="form-control" value="{{ health_check.heart }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Brzuch</label>
-                            <input type="text" name="abdomen" class="form-control">
+                            <input type="text" name="abdomen" class="form-control" value="{{ health_check.abdomen }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Układ moczowo-płciowy</label>
-                            <input type="text" name="urogenital" class="form-control">
+                            <input type="text" name="urogenital" class="form-control" value="{{ health_check.urogenital }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Układ kostno-stawowy</label>
-                            <input type="text" name="musculoskeletal" class="form-control">
+                            <input type="text" name="musculoskeletal" class="form-control" value="{{ health_check.musculoskeletal }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Stan odżywienia</label>
-                            <input type="text" name="nutrition_status" class="form-control">
+                            <input type="text" name="nutrition_status" class="form-control" value="{{ health_check.nutrition_status }}">
                         </div>
                     </div>
 
@@ -105,16 +105,16 @@
                             <label class="form-label">Zaburzenia wzroku</label>
                             <select name="vision" class="form-control">
                                 <option value="">-- wybierz --</option>
-                                <option value="prawidłowe">Prawidłowe</option>
-                                <option value="nieprawidłowe">Nieprawidłowe</option>
+                                <option value="prawidłowe" {% if health_check.vision == "prawidłowe" %}selected{% endif %}>Prawidłowe</option>
+                                <option value="nieprawidłowe" {% if health_check.vision == "nieprawidłowe" %}selected{% endif %}>Nieprawidłowe</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Zaburzenia słuchu</label>
                             <select name="hearing" class="form-control">
                                 <option value="">-- wybierz --</option>
-                                <option value="prawidłowe">Prawidłowe</option>
-                                <option value="nieprawidłowe">Nieprawidłowe</option>
+                                <option value="prawidłowe" {% if health_check.hearing == "prawidłowe" %}selected{% endif %}>Prawidłowe</option>
+                                <option value="nieprawidłowe" {% if health_check.hearing == "nieprawidłowe" %}selected{% endif %}>Nieprawidłowe</option>
                             </select>
                         </div>
                     </div>
@@ -122,27 +122,27 @@
                     <h5 class="mb-3 mt-4"><i class="fas fa-clipboard"></i> Zalecenia</h5>
                     <div class="mb-3">
                         <label class="form-label">Zalecenia</label>
-                        <textarea name="recommendations" class="form-control" rows="2"></textarea>
+                        <textarea name="recommendations" class="form-control" rows="2">{{ health_check.recommendations }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Dieta/Witaminy</label>
-                        <textarea name="diet" class="form-control" rows="2"></textarea>
+                        <textarea name="diet" class="form-control" rows="2">{{ health_check.diet }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Zlecone badania diagnostyczne</label>
-                        <textarea name="diagnostic_tests" class="form-control" rows="2"></textarea>
+                        <textarea name="diagnostic_tests" class="form-control" rows="2">{{ health_check.diagnostic_tests }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Zlecone konsultacje</label>
-                        <textarea name="consultations" class="form-control" rows="2"></textarea>
+                        <textarea name="consultations" class="form-control" rows="2">{{ health_check.consultations }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Problemy zdrowotne</label>
-                        <textarea name="health_problems" class="form-control" rows="2"></textarea>
+                        <textarea name="health_problems" class="form-control" rows="2">{{ health_check.health_problems }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Uwagi lekarskie</label>
-                        <textarea name="notes" class="form-control" rows="2"></textarea>
+                        <textarea name="notes" class="form-control" rows="2">{{ health_check.notes }}</textarea>
                     </div>
 
                     <div class="d-flex justify-content-between mt-4">
@@ -150,7 +150,7 @@
                             <i class="fas fa-arrow-left"></i> Wróć
                         </a>
                         <button type="submit" class="btn btn-warning">
-                            <i class="fas fa-save"></i> Zapisz
+                            <i class="fas fa-save"></i> Zapisz zmiany
                         </button>
                     </div>
 

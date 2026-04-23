@@ -20,13 +20,44 @@ class Vaccination(models.Model):
 class HealthCheck(models.Model):
     child = models.ForeignKey(Child, on_delete=models.CASCADE, related_name='health_checks', verbose_name="Dziecko")
     date = models.DateField(verbose_name="Data bilansu")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Waga (kg)")
+    
+    # Pomiary
+    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Masa ciała (kg)")
     height = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Wzrost (cm)")
+    head_circumference = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, verbose_name="Obwód głowy (cm)")
+    blood_pressure = models.CharField(max_length=20, blank=True, verbose_name="Ciśnienie tętnicze")
+    bmi = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, verbose_name="Wskaźnik BMI")
+    
+    # Badanie lekarskie
+    skin = models.CharField(max_length=200, blank=True, verbose_name="Skóra")
+    head = models.CharField(max_length=200, blank=True, verbose_name="Głowa")
+    neck = models.CharField(max_length=200, blank=True, verbose_name="Szyja")
+    eyes = models.CharField(max_length=200, blank=True, verbose_name="Oczy")
+    ears = models.CharField(max_length=200, blank=True, verbose_name="Uszy")
+    mouth = models.CharField(max_length=200, blank=True, verbose_name="Jama ustna/gardło")
+    lymph_nodes = models.CharField(max_length=200, blank=True, verbose_name="Węzły chłonne")
+    lungs = models.CharField(max_length=200, blank=True, verbose_name="Płuca")
+    heart = models.CharField(max_length=200, blank=True, verbose_name="Serce")
+    abdomen = models.CharField(max_length=200, blank=True, verbose_name="Brzuch")
+    urogenital = models.CharField(max_length=200, blank=True, verbose_name="Układ moczowo-płciowy")
+    musculoskeletal = models.CharField(max_length=200, blank=True, verbose_name="Układ kostno-stawowy")
+    nutrition_status = models.CharField(max_length=200, blank=True, verbose_name="Stan odżywienia")
+    
+    # Zaburzenia
+    vision = models.CharField(max_length=50, blank=True, verbose_name="Zaburzenia wzroku")
+    hearing = models.CharField(max_length=50, blank=True, verbose_name="Zaburzenia słuchu")
+    
+    # Zalecenia
+    recommendations = models.TextField(blank=True, verbose_name="Zalecenia")
+    diet = models.TextField(blank=True, verbose_name="Dieta/Witaminy")
+    diagnostic_tests = models.TextField(blank=True, verbose_name="Zlecone badania diagnostyczne")
+    consultations = models.TextField(blank=True, verbose_name="Zlecone konsultacje")
+    health_problems = models.TextField(blank=True, verbose_name="Problemy zdrowotne")
     notes = models.TextField(blank=True, verbose_name="Uwagi lekarskie")
 
     def __str__(self):
         return f"Bilans {self.child.name} z dnia {self.date}"
-
+        
 class HealthCheckSchedule(models.Model):
     child = models.ForeignKey(Child, on_delete=models.CASCADE, related_name='schedule')
     age_months = models.IntegerField(verbose_name="Wiek w miesiącach")
