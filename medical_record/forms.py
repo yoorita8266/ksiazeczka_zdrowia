@@ -17,12 +17,13 @@ def validate_pesel(value):
 class ChildForm(forms.ModelForm):
     class Meta:
         model = Child
-        fields = ['name', 'birth_date', 'blood_group', 'pesel']
+        fields = ['name', 'birth_date', 'blood_group', 'pesel', 'gender']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Wpisz imię dziecka'}),
             'birth_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'blood_group': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'np. A+, B-, 0+'}),
             'pesel': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Wpisz PESEL dziecka', 'maxlength': '11'}),
+            'gender': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean_pesel(self):
@@ -30,7 +31,6 @@ class ChildForm(forms.ModelForm):
         validate_pesel(pesel)
         return pesel
 
-        
 class VaccinationForm(forms.ModelForm):
     class Meta:
         model = Vaccination

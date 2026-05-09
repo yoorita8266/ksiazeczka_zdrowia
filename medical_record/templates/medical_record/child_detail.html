@@ -27,7 +27,9 @@
     </div>
     <div class="card-body">
         <p><strong>Imię:</strong> {{ child.name }}</p>
+        <p><strong>Płeć:</strong> {{ child.get_gender_display|default:"Nie podano" }}</p>
         <p><strong>Data urodzenia:</strong> {{ child.birth_date }}</p>
+        <p><strong>Wiek:</strong> <span id="childAge"></span></p>
         <p><strong>Grupa krwi:</strong> {{ child.blood_group|default:"Nie podano" }}</p>
         <p><strong>PESEL:</strong> {{ child.pesel|default:"Nie podano" }}</p>
     </div>
@@ -142,5 +144,174 @@
         {% endif %}
     </div>
 </div>
+
+
+<!-- Wykres wzrostu i wagi -->
+{% if schedule %}
+<div class="card mb-4">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="fas fa-chart-line"></i> Rozwój dziecka</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <!-- Lewa strona - tabela bilansów -->
+            <div class="col-md-5">
+                <h6><i class="fas fa-list"></i> Historia bilansów</h6>
+                <table class="table table-sm table-striped">
+                    <thead class="table-info">
+                        <tr>
+                            <th>Wiek</th>
+                            <th>Waga</th>
+                            <th>Wzrost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in schedule %}
+                            {% if s.health_check %}
+                            <tr>
+                                <td>{{ s.age_months }} mies.</td>
+                                <td>{{ s.health_check.weight }} kg</td>
+                                <td>{{ s.health_check.height }} cm</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- Prawa strona - wykres -->
+            <div class="col-md-7">
+                <canvas id="growthChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const labels = [
+        {% for s in schedule %}
+            {% if s.health_check %}
+                "{{ s.age_months }} mies.",
+            {% endif %}
+        {% endfor %}
+    ];
+
+    const weightData = [
+        {% for s in schedule %}
+            {% if s.health_check %}
+                {{ s.health_check.weight }},
+            {% endif %}
+        {% endfor %}
+    ];
+
+    const heightData = [
+        {% for s in schedule %}
+            {% if s.health_check %}
+                {{ s.health_check.height }},
+            {% endif %}
+        {% endfor %}
+    ];
+
+    const ctx = document.getElementById('growthChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Waga (kg)',
+                    data: weightData,
+                    borderColor: '#198754',
+                    backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Wzrost (cm)',
+                    data: heightData,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: true, text: 'Rozwój dziecka' }
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: { display: true, text: 'Waga (kg)' }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: { display: true, text: 'Wzrost (cm)' },
+                    grid: { drawOnChartArea: false }
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+
+<script>
+    // Animowane pojawianie się kart
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 150);
+    });
+</script>
+
+<script>
+    // Dynamiczny licznik wieku dziecka
+    function obliczWiek() {
+        const dataUrodzenia = new Date("{{ child.birth_date|date:'Y-m-d' }}");
+        const dzisiaj = new Date();
+        
+        let lata = dzisiaj.getFullYear() - dataUrodzenia.getFullYear();
+        let miesiace = dzisiaj.getMonth() - dataUrodzenia.getMonth();
+        let dni = dzisiaj.getDate() - dataUrodzenia.getDate();
+        
+        if (dni < 0) {
+            miesiace--;
+        }
+        
+        if (miesiace < 0) {
+            lata--;
+            miesiace += 12;
+        }
+
+        let wynik = '';
+        if (lata > 0) {
+            wynik += lata + (lata === 1 ? ' rok' : lata < 5 ? ' lata' : ' lat');
+        }
+        if (miesiace > 0) {
+            if (wynik) wynik += ' i ';
+            wynik += miesiace + (miesiace === 1 ? ' miesiąc' : miesiace < 5 ? ' miesiące' : ' miesięcy');
+        }
+        
+        document.getElementById('childAge').textContent = wynik;
+    }
+
+    obliczWiek();
+    setInterval(obliczWiek, 60000);
+</script>
 
 {% endblock %}
