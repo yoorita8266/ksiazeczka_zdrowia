@@ -15,6 +15,20 @@
             <a class="navbar-brand" href="{% url 'child_list' %}">
                 <i class="fas fa-heartbeat"></i> Książeczka zdrowia dziecka
             </a>
+            <div class="ms-auto">
+                {% if request.user.is_authenticated %}
+                    <span class="navbar-text me-3 text-white">
+                        <i class="fas fa-user"></i> {{ request.user.username }}
+                    </span>
+                    <a href="{% url 'logout' %}" class="btn btn-light btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> Wyloguj
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-light btn-sm">
+                        <i class="fas fa-sign-in-alt"></i> Zaloguj
+                    </a>
+                {% endif %}
+            </div>
         </div>
     </nav>
 

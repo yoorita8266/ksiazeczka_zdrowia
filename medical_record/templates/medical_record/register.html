@@ -1,0 +1,49 @@
+{% extends 'medical_record/base.html' %}
+
+{% block title %}Rejestracja{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card mt-5">
+            <div class="card-header bg-success text-white text-center">
+                <h4 class="mb-0"><i class="fas fa-user-plus"></i> Rejestracja</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            Popraw błędy w formularzu.
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Nazwa użytkownika</label>
+                        <input type="text" name="username" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Hasło</label>
+                        <input type="password" name="password1" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Powtórz hasło</label>
+                        <input type="password" name="password2" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-user-plus"></i> Zarejestruj się
+                    </button>
+
+                </form>
+
+                <hr>
+                <p class="text-center">Masz już konto? <a href="{% url 'login' %}">Zaloguj się</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

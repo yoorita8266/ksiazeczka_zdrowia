@@ -6,9 +6,15 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1><i class="fas fa-child"></i> {{ child.name }}</h1>
-    <a href="{% url 'child_list' %}" class="btn btn-secondary">
-        <i class="fas fa-arrow-left"></i> Wróć
-    </a>
+    <div>
+        <a href="{% url 'child_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Wróć
+        </a>
+        <a href="{% url 'delete_child' child.pk %}" class="btn btn-danger ms-2"
+           onclick="return confirm('Czy na pewno chcesz usunąć dziecko {{ child.name }}? Tej operacji nie można cofnąć!')">
+            <i class="fas fa-trash"></i> Usuń dziecko
+        </a>
+    </div>
 </div>
 
 <!-- Podstawowe informacje -->
@@ -23,6 +29,7 @@
         <p><strong>Imię:</strong> {{ child.name }}</p>
         <p><strong>Data urodzenia:</strong> {{ child.birth_date }}</p>
         <p><strong>Grupa krwi:</strong> {{ child.blood_group|default:"Nie podano" }}</p>
+        <p><strong>PESEL:</strong> {{ child.pesel|default:"Nie podano" }}</p>
     </div>
 </div>
 

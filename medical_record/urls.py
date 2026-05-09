@@ -9,4 +9,8 @@ urlpatterns = [
     path('health_check/<int:pk>/edit/', views.edit_health_check, name='edit_health_check'),
     path('child/<int:pk>/edit/', views.edit_child, name='edit_child'),
     path('health_check/<int:pk>/', views.health_check_detail, name='health_check_detail'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('register/', views.register_view, name='register'),
+    path('child/<int:pk>/delete/', views.delete_child, name='delete_child'),
 ]

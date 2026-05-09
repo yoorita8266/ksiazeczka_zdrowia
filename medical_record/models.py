@@ -1,9 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Child(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Właściciel", null=True, blank=True)
     name = models.CharField(max_length=100, verbose_name="Imię dziecka")
     birth_date = models.DateField(verbose_name="Data urodzenia")
     blood_group = models.CharField(max_length=10, verbose_name="Grupa krwi", blank=True)
+    pesel = models.CharField(max_length=11, verbose_name="PESEL", unique=True, blank=True, null=True)
 
     def __str__(self):
         return self.name

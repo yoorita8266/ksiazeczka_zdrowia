@@ -13,19 +13,46 @@
                 <form method="POST">
                     {% csrf_token %}
 
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label">PESEL</label>
+                        {{ form.pesel }}
+                        {% if form.pesel.errors %}
+                            <div class="text-danger">{{ form.pesel.errors }}</div>
+                        {% endif %}
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label">Imię dziecka</label>
-                        <input type="text" name="name" class="form-control" placeholder="Wpisz imię dziecka" required>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="text-danger">{{ form.name.errors }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Data urodzenia</label>
-                        <input type="date" name="birth_date" class="form-control" required>
+                        {{ form.birth_date }}
+                        {% if form.birth_date.errors %}
+                            <div class="text-danger">{{ form.birth_date.errors }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Grupa krwi</label>
-                        <input type="text" name="blood_group" class="form-control" placeholder="np. A+, B-, 0+">
+                        {{ form.blood_group }}
+                        {% if form.blood_group.errors %}
+                            <div class="text-danger">{{ form.blood_group.errors }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="d-flex justify-content-between">

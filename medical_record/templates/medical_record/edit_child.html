@@ -12,6 +12,10 @@
             <div class="card-body">
                 <form method="POST">
                     {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">PESEL</label>
+                         <input type="text" name="pesel" class="form-control" placeholder="Wpisz PESEL dziecka" maxlength="11">
+                    </div>
 
                     <div class="mb-3">
                         <label class="form-label">Imię dziecka</label>
