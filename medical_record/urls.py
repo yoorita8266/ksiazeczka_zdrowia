@@ -4,13 +4,21 @@ from . import views
 urlpatterns = [
     path('', views.child_list, name='child_list'),
     path('child/<int:pk>/', views.child_detail, name='child_detail'),
+    path('child/<int:pk>/health_checks/', views.child_health_check_list, name='child_health_check_list'),
     path('add/', views.add_child, name='add_child'),
+
+    # lista bilansów zdrowia
+    path('health_checks/', views.health_check_list, name='health_check_list'),
+    path('child/<int:pk>/health_checks/', views.child_health_check_list, name='child_health_check_list'),
+
     path('child/<int:pk>/add_health_check/', views.add_health_check, name='add_health_check'),
     path('health_check/<int:pk>/edit/', views.edit_health_check, name='edit_health_check'),
     path('child/<int:pk>/edit/', views.edit_child, name='edit_child'),
     path('health_check/<int:pk>/', views.health_check_detail, name='health_check_detail'),
+
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register_view, name='register'),
+
     path('child/<int:pk>/delete/', views.delete_child, name='delete_child'),
 ]

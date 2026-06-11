@@ -64,9 +64,14 @@ class HealthCheck(models.Model):
     health_problems = models.TextField(blank=True, verbose_name="Problemy zdrowotne")
     notes = models.TextField(blank=True, verbose_name="Uwagi lekarskie")
 
-    def __str__(self):
-        return f"Bilans {self.child.name} z dnia {self.date}"
-        
+def save(self, *args, **kwargs):
+    if self.weight and self.height:
+        height_m = self.height / 100
+        self.bmi = round(self.weight / (height_m ** 2), 2)
+    super().save(*args, **kwargs)
+
+def __str__(self):
+    return f"Bilans {self.child.name} z dnia {self.date}"
 class HealthCheckSchedule(models.Model):
     child = models.ForeignKey(Child, on_delete=models.CASCADE, related_name='schedule')
     age_months = models.IntegerField(verbose_name="Wiek w miesiącach")

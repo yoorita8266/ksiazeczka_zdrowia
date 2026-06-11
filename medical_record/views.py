@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .models import Child, Vaccination, HealthCheck, HealthCheckSchedule, create_health_check_schedule
 from .forms import ChildForm, VaccinationForm, HealthCheckForm
+from django.core.paginator import Paginator
 
 # logowanie
 def login_view(request):
@@ -143,3 +144,41 @@ def health_check_detail(request, pk):
     health_check = HealthCheck.objects.get(id=pk)
     child = health_check.child
     return render(request, 'medical_record/health_check_detail.html', {'health_check': health_check, 'child': child})
+
+# lista wszystkich bilansów zdrowia z paginacją
+@login_required(login_url='login')
+def health_check_list(request):
+    health_checks = HealthCheckSchedule.objects.filter(
+    child=child
+).order_by('age_months')
+
+    per_page = int(request.GET.get('per_page', 5))
+    page_number = request.GET.get('page', 1)
+
+    paginator = Paginator(health_checks, per_page)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'medical_record/health_check_list.html', {
+        'page_obj': page_obj,
+        'per_page': per_page,
+    })
+
+
+# lista bilansów konkretnego dziecka z paginacją
+@login_required(login_url='login')
+def child_health_check_list(request, pk):
+    child = Child.objects.get(id=pk, owner=request.user)
+
+    health_checks = HealthCheckSchedule.objects.filter(child=child).order_by('age_months')
+
+    per_page = int(request.GET.get('per_page', 5))
+    page_number = request.GET.get('page', 1)
+
+    paginator = Paginator(health_checks, per_page)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'medical_record/child_health_check_list.html', {
+        'child': child,
+        'page_obj': page_obj,
+        'per_page': per_page,
+    })
