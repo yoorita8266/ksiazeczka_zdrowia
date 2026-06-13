@@ -20,5 +20,11 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register_view, name='register'),
 
+    path('child/<int:pk>/export-csv/', views.export_health_checks_csv, name='export_health_checks_csv'),
+    path('child/<int:pk>/weight-chart/', views.child_weight_chart, name='child_weight_chart'),
+    path('child/<int:pk>/import/', views.import_medical_data, name='import_medical_data'),
+
     path('child/<int:pk>/delete/', views.delete_child, name='delete_child'),
+    path('child/<int:pk>/import/', views.import_medical_data, name='import_medical_data'),
+    path('child/<int:pk>/add-vaccination/', views.add_vaccination, name='add_vaccination'),
 ]

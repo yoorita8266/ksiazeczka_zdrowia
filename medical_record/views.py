@@ -5,6 +5,13 @@ from django.contrib.auth.decorators import login_required
 from .models import Child, Vaccination, HealthCheck, HealthCheckSchedule, create_health_check_schedule
 from .forms import ChildForm, VaccinationForm, HealthCheckForm
 from django.core.paginator import Paginator
+import csv
+from django.http import HttpResponse
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import io
+from datetime import datetime
 
 # logowanie
 def login_view(request):
@@ -163,13 +170,23 @@ def health_check_list(request):
         'per_page': per_page,
     })
 
-
 # lista bilansów konkretnego dziecka z paginacją
 @login_required(login_url='login')
 def child_health_check_list(request, pk):
     child = Child.objects.get(id=pk, owner=request.user)
 
     health_checks = HealthCheckSchedule.objects.filter(child=child).order_by('age_months')
+
+    status_filter = request.GET.get('status', '')
+    min_age_filter = request.GET.get('min_age', '')
+
+    if status_filter == 'done':
+        health_checks = health_checks.filter(is_done=True)
+    elif status_filter == 'pending':
+        health_checks = health_checks.filter(is_done=False)
+
+    if min_age_filter.isdigit():
+        health_checks = health_checks.filter(age_months__gte=int(min_age_filter))
 
     per_page = int(request.GET.get('per_page', 5))
     page_number = request.GET.get('page', 1)
@@ -181,4 +198,123 @@ def child_health_check_list(request, pk):
         'child': child,
         'page_obj': page_obj,
         'per_page': per_page,
+        'status_filter': status_filter, 
+        'min_age_filter': min_age_filter,
+    })
+
+# eksportowanie bilansów do pliku CSV 
+@login_required(login_url='login')
+def export_health_checks_csv(request, pk):
+    child = Child.objects.get(id=pk, owner=request.user)
+    health_checks = HealthCheckSchedule.objects.filter(child=child).order_by('age_months')
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="bilanse_dziecka_{child.id}.csv"'
+
+    writer = csv.writer(response, delimiter=';')
+
+    writer.writerow(['Data harmonogramu', 'Wiek (miesiace)', 'Wykonano', 'Waga (kg)', 'Wzrost (cm)'])
+
+    for item in health_checks:
+        weight = item.health_check.weight if item.health_check else 'Brak danych'
+        height = item.health_check.height if item.health_check else 'Brak danych'
+        status = 'Tak' if item.is_done else 'Nie'
+        
+        writer.writerow([item.due_date, item.age_months, status, weight, height])
+
+    return response
+
+# generowanie wykresu 
+@login_required(login_url='login')
+def child_weight_chart(request, pk):
+    child = Child.objects.get(id=pk, owner=request.user)
+    health_checks = HealthCheckSchedule.objects.filter(
+        child=child, 
+        is_done=True, 
+        health_check__isnull=False
+    ).order_by('age_months')
+
+    ages = []
+    weights = []
+
+    for item in health_checks:
+        if item.health_check.weight:
+            ages.append(item.age_months)
+            weights.append(float(item.health_check.weight))
+
+    plt.figure(figsize=(8, 4))
+    if ages and weights:
+        plt.plot(ages, weights, marker='o', linestyle='-', color='g')
+        plt.title(f'Wykres wagi {child.name}')
+        plt.xlabel('Wiek (miesiące)')
+        plt.ylabel('Waga (kg)')
+        plt.grid(True)
+    else:
+        plt.text(0.5, 0.5, 'Brak danych z wagi do wygenerowania wykresu', 
+                 horizontalalignment='center', verticalalignment='center')
+
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    plt.close()
+    buffer.seek(0)
+
+    return HttpResponse(buffer, content_type='image/png')
+
+# dodawanie szczepienia
+@login_required(login_url='login')
+def add_vaccination(request, pk):
+    child = Child.objects.get(id=pk, owner=request.user)
+    if request.method == "POST":
+        form = VaccinationForm(request.POST)
+        if form.is_valid():
+            vaccination = form.save(commit=False)
+            vaccination.child = child
+            vaccination.save()
+            return redirect('child_detail', pk=child.pk)
+    else:
+        form = VaccinationForm()
+    return render(request, 'medical_record/add_vaccination.html', {'form': form, 'child': child})
+
+# importowanie szczepień z pliku CSV z zapisem do bazy 
+@login_required(login_url='login')
+def import_medical_data(request, pk):
+    child = Child.objects.get(id=pk, owner=request.user)
+    extracted_data = []
+    error_message = None
+
+    if request.method == 'POST':
+        uploaded_file = request.FILES.get('data_file')
+        if uploaded_file:
+            if not uploaded_file.name.endswith('.csv'):
+                error_message = "Dozwolone są tylko pliki .csv!"
+            else:
+                try:
+                    decoded_file = uploaded_file.read().decode('utf-8').splitlines()
+                    reader = csv.reader(decoded_file, delimiter=';')
+                    
+                    for row in reader:
+                        if len(row) >= 3:
+                            v_name = row[0].strip()
+                            v_date_str = row[1].strip()
+                            v_status_str = row[2].strip().lower()
+
+                            v_date = datetime.strptime(v_date_str, '%Y-%m-%d').date()
+                            v_status = True if v_status_str in ['tak', 'true', '1'] else False
+                            
+                            Vaccination.objects.create(
+                                child=child,
+                                vaccine_name=v_name,
+                                date=v_date,
+                                status=v_status
+                            )
+                            extracted_data.append(f"Zapisano do bazy: {v_name} z datą {v_date}")
+                except Exception as e:
+                    error_message = f"Błąd odczytu pliku. Wzór linijki to: WZW B;2023-01-15;Tak. Szczegóły: {str(e)}"
+        else:
+            error_message = "Nie wybrano żadnego pliku."
+
+    return render(request, 'medical_record/import_data.html', {
+        'child': child,
+        'extracted_data': extracted_data,
+        'error_message': error_message
     })

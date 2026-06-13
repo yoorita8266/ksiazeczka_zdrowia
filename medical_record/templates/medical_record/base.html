@@ -7,9 +7,8 @@
     <title>{% block title %}Kartoteka Medyczna{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'medical_record/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'medical_record/css/all.min.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="{% static 'medical_record/js/bootstrap.bundle.min.js' %}"></script>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-success">
@@ -40,5 +39,23 @@
     </div>
 
     <script src="{% static 'medical_record/js/bootstrap.bundle.min.js' %}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const alerts = document.querySelectorAll('.alert');
+            
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.transition = "opacity 0.6s ease-out";
+                    alert.style.opacity = "0";
+
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 600);
+                }, 4000);
+            });
+        });
+    </script>
+
 </body>
 </html>
