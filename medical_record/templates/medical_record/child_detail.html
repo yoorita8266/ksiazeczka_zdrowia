@@ -158,7 +158,7 @@
     const weightData = [
         {% for s in schedule %}
             {% if s.health_check %}
-                {{ s.health_check.weight }},
+                parseFloat("{{ s.health_check.weight }}".replace(',', '.')),
             {% endif %}
         {% endfor %}
     ];
@@ -166,7 +166,7 @@
     const heightData = [
         {% for s in schedule %}
             {% if s.health_check %}
-                {{ s.health_check.height }},
+                parseFloat("{{ s.health_check.height }}".replace(',', '.')),
             {% endif %}
         {% endfor %}
     ];
